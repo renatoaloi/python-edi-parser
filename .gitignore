@@ -109,3 +109,4 @@ setup.cfg
 
 # django
 /static/
+/media/

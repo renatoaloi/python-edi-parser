@@ -37,23 +37,29 @@ EDI_LAYOUTS = [
             {
                 'registro': 'header',
                 'regex': r'^00\d{8}\d{7}.{10}\d{3}\d{10}$',
-                'positions': ( {1, 2}, {3, 8}, {11, 7}, {18, 10}, {28, 3}, {31, 10}, ),
+                'positions': ( (1, 2), (3, 8), (11, 7), (18, 10), (28, 3), (31, 10), ),
                 'formato': ( 'N', 'N', 'N', 'X', 'N', 'N', ),
-                'obrigatorio': ( True, True, True, False, False, True )
+                'obrigatorio': ( True, True, True, False, False, True, ),
+                'custom_validation': ( None, 'Date', 'NewerThan30days', None, None, ),
+                'data': ( 3, )
             },
             {
                 'registro': 'detalhe',
                 'regex': r'^01\d{7}\d{19}.{6}\d{8}\d{1}\d{15}\d{3}\d{15}\d{15}\d{15}\d{15}\d{7}[0]{3}\d{10}.{30}\d{2}\d{8}\d{4}[0]{7}[0]{15}.{3}.{4}[ ]{11}.{19}\d{4}[ ]{2}$',
-                'positions': ( {1, 2}, {3, 7}, {10, 19}, {29, 6}, {35, 8}, {43, 1}, {44, 15}, {59, 3}, {62, 15}, {77, 15}, {92, 15}, {107, 15}, {122, 7}, {129, 3}, {132, 10}, {142, 30}, {172, 2}, {174, 8}, {182, 4}, {186, 7}, {193, 15}, {208, 4}, {211, 4}, {215, 11}, {226, 19}, {245, 4}, {249, 2}, ),
+                'positions': ( (1, 2), (3, 7), (10, 19), (29, 6), (35, 8), (43, 1), (44, 15), (59, 3), (62, 15), (77, 15), (92, 15), (107, 15), (122, 7), (129, 3), (132, 10), (142, 30), (172, 2), (174, 8), (182, 4), (186, 7), (193, 15), (208, 4), (211, 4), (215, 11), (226, 19), (245, 4), (249, 2), ),
                 'formato': ( 'N','N','N','X','N','N','N','N','N','N','N','N','N','N','N','X','N','N','X','N','N','X','X','X','X','N','X', ),
-                'obrigatorio': ( True, True, True, False, True, True, True, True, True, True, True, True, True, False, True, False, False, False, True, False, False, False, False, False, False, False, False )
+                'obrigatorio': ( True, True, True, False, True, True, True, True, True, True, True, True, True, False, True, False, False, False, True, False, False, False, False, False, False, False, False, ),
+                'custom_validation': ( None, 'Unique', 'GreaterThanOrEqualTo16', None, 'Date', 'Distinct', None, None, None, None, None, None, 'SameAsHeader3', None, 'SameAsHeader6', None, None, None, None, None, None, None, None, None, None, None, None, ),
+                'data': ( 7, )
             },
             {
                 'registro': 'trailler',
                 'regex': r'^99\d{7}\d{15}\d{15}\d{15}\d{8}.{188}$',
-                'positions': ( {1, 2}, {3, 7}, {10, 15}, {25, 15}, {40, 15}, {55, 8}, {63, 188}, ),
-                'formato': ( 'N', 'N', 'N', 'N', 'N', 'N', 'X' ),
-                'obrigatorio': ( True, True, True, False, False, False, False )
+                'positions': ( (1, 2), (3, 7), (10, 15), (25, 15), (40, 15), (55, 8), (63, 188), ),
+                'formato': ( 'N', 'N', 'N', 'N', 'N', 'N', 'X', ),
+                'obrigatorio': ( True, True, True, False, False, False, False, ),
+                'custom_validation': ( None, None, 'SumDetalhe7', None, None, None, None, ),
+                'data': ()
             }
         ]
     }

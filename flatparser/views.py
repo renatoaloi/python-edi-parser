@@ -29,9 +29,24 @@ class ApiParser(views.APIView):
 
                     # Processing layout
                     data['messages'].append('Processing layout: {}'.format(layout['type']))
+
+                    # Complete file path
+                    file_path = media_path + '\\' + filename
+
+                    # Regex matching validation
+                    allLinesMatch, messages = helpers.regex_match(layout, file_path)
                     
-                    # Regex matching
-                    allLinesMatch, messages = helpers.regex_match(layout, media_path + '\\' + filename)
+                    # Registering data in a database
+                    if allLinesMatch:
+                        allLinesMatch, messages = helpers.register_data(layout, file_path)
+
+                    # Mandatory fields validation
+                    if allLinesMatch:
+                        allLinesMatch, messages = helpers.mandatory_check(layout, file_path)
+
+                    # Custom rules validation
+                    if allLinesMatch:
+                        allLinesMatch, messages = helpers.custom_rules(layout, file_path)
 
                     # updating validate status
                     data['valid'] = allLinesMatch

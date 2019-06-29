@@ -1,7 +1,10 @@
 import re
-from .factory import DateCustomValidation, NumberCustomValidation, TextCustomValidation, \
-                        UniqueWithin30daysCustomValidation, UniqueCustomValidation, \
-                            GreaterThanOrEqualTo16CustomValidation, DistinctCustomValidation
+from .factory.validation import DateCustomValidation, NumberCustomValidation, TextCustomValidation, \
+                            UniqueWithin30daysCustomValidation, UniqueCustomValidation, \
+                            GreaterThanOrEqualTo16CustomValidation, DistinctCustomValidation, \
+                            SameAsHeader3CustomValidation, SumDetalhe7CustomValidation, \
+                            SameAsHeader6CustomValidation
+from .factory.action import SaveFieldCustomAction, SumFieldCustomAction
 from .fs import read_file
 from .models import UniqueEntity, DistinctEntity
 
@@ -123,6 +126,72 @@ def mandatory_check(layout, filepath):
         return (False, [ str(e) ],)
 
 
+# Run custom actions to support some custom validations later
+# receives a layout and filepath
+# returns a tuple containing if it is valid and a message array
+def custom_actions(layout, filepath):
+
+    try:
+
+        # Processing lines
+        count = 1
+        messages = []
+
+        for line in read_file(filepath):
+            # print(line)
+            
+            # Matching for header, detalhe or trailler
+            for registro in layout['layout']:
+
+                # Regex search for a match
+                match = re.search(registro['regex'], line)
+                if match is not None:
+                    # Found a match
+                    messages.append('Running custom actions for line #{} for {}'.format(count, registro['registro']))
+
+                    # Iterate through the fields
+                    i = 0
+                    for action_key in registro['custom_action']:
+
+                        # Check if it is mandatory
+                        if action_key is not None:
+
+                            # First we get the field
+                            # from its coordinates
+                            position_start, position_len = registro['positions'][i]
+                            field = line[position_start - 1:position_start + position_len - 1]
+
+                            # Then we run actions
+                            if action_key == 'SaveField':
+                                # Save the field
+                                SaveFieldCustomAction().run(field, i + 1, registro['registro'])
+                            elif action_key == 'SumField':
+                                # Sum the field
+                                SumFieldCustomAction().run(field, i + 1, registro['registro'])
+                                
+                            else:
+                                # there is no action configured for this key
+                                raise Exception('There is no action ' + \
+                                    'configured for this key {}'.format(action_key))
+
+                            messages.append('Done run custom action {} for field #{} in line #{}!'\
+                                    .format(action_key, i + 1, count))
+
+                        # increment field index
+                        i += 1
+                    
+                    # Break because we found a match already
+                    break
+
+            # update line count    
+            count += 1
+        
+        return (True, messages,)
+
+    except Exception as e:
+        return (False, [ str(e) ],)
+
+
 # Check for custom rules
 # receives a layout and filepath
 # returns a tuple containing if it is valid and a message array
@@ -179,6 +248,15 @@ def custom_rules(layout, filepath):
                             elif validation_key == 'Distinct':
                                 # check for only one type in the batch
                                 is_valid = DistinctCustomValidation().validate(field)
+                            elif validation_key == 'SameAsHeader3':
+                                # check for match the value with third header file
+                                is_valid = SameAsHeader3CustomValidation().validate(field)
+                            elif validation_key == 'SameAsHeader6':
+                                # check for match the value with third header file
+                                is_valid = SameAsHeader6CustomValidation().validate(field)
+                            elif validation_key == 'SumDetalhe7':
+                                # check for match the value with sum of detalhe's seventh field
+                                is_valid = SumDetalhe7CustomValidation().validate(field)
                                 
                             else:
                                 # there is no custom validator configured for this key

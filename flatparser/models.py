@@ -12,3 +12,15 @@ class UniqueEntity(models.Model):
 
 class DistinctEntity(models.Model):
     field = models.IntegerField()
+
+
+class SaveFieldEntity(models.Model):
+    field = models.IntegerField()
+    position = models.IntegerField()
+    registro = models.CharField(max_length=200, default='')
+
+
+class SumFieldEntity(models.Model):
+    field = models.IntegerField()
+    position = models.IntegerField()
+    registro = models.CharField(max_length=200)

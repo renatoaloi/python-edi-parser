@@ -40,7 +40,8 @@ EDI_LAYOUTS = [
                 'positions': ( (1, 2), (3, 8), (11, 7), (18, 10), (28, 3), (31, 10), ),
                 'formato': ( 'N', 'N', 'N', 'X', 'N', 'N', ),
                 'obrigatorio': ( False, True, True, False, False, True, ),
-                'custom_validation': ( None, 'Date', 'UniqueWithin30days', None, None, ),
+                'custom_validation': ( None, 'Date', 'UniqueWithin30days', None, None, None ),
+                'custom_action': ( None, None, 'SaveField', None, None, 'SaveField' )
             },
             {
                 'registro': 'detalhe',
@@ -49,6 +50,7 @@ EDI_LAYOUTS = [
                 'formato': ( 'N','N','N','X','N','N','N','N','N','N','N','N','N','N','N','X','N','N','X','N','N','X','X','X','X','N','X', ),
                 'obrigatorio': ( False, True, True, False, True, True, True, True, True, False, False, True, True, False, True, False, False, False, True, False, False, False, False, False, False, False, False, ),
                 'custom_validation': ( None, 'Unique', 'GreaterThanOrEqualTo16', None, 'Date', 'Distinct', None, None, None, None, None, None, 'SameAsHeader3', None, 'SameAsHeader6', None, None, None, None, None, None, None, None, None, None, None, None, ),
+                'custom_action': ( None, None, None, None, None, None, 'SumField', None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, )
             },
             {
                 'registro': 'trailler',
@@ -57,6 +59,7 @@ EDI_LAYOUTS = [
                 'formato': ( 'N', 'N', 'N', 'N', 'N', 'N', 'X', ),
                 'obrigatorio': ( False, True, True, False, False, False, False, ),
                 'custom_validation': ( None, None, 'SumDetalhe7', None, None, None, None, ),
+                'custom_action': ( None, None, None, None, None, None, None, )
             }
         ]
     }

@@ -1,8 +1,8 @@
 from abc import ABCMeta, abstractmethod
 import datetime
-from .fs import read_file
-from .models import UniqueWithin30daysEntity, UniqueEntity, DistinctEntity
-import datetime
+from ..fs import read_file
+from ..models import UniqueWithin30daysEntity, UniqueEntity, DistinctEntity, \
+                        SaveFieldEntity, SumFieldEntity
 from django.db.models import Q
 
 
@@ -105,12 +105,13 @@ class UniqueCustomValidation(CustomValidation):
     def validate(self, field):
         try:
             # checking if it is unique against the database
-            unique = UniqueEntity.objects.find(field=field).first()
+            unique = UniqueEntity.objects.filter(field=field).first()
             if unique is None:
                 return True
 
             return False
-        except Exception:
+        except Exception as e:
+            print(e)
             return False
 
 
@@ -138,15 +139,80 @@ class DistinctCustomValidation(CustomValidation):
             
             # check if there is only one type of field
             # by checking if there is no other type
-            field = DistinctEntity.objects.filter(~Q(field=field)).first()
-            if field is None:
+            entity = DistinctEntity.objects.filter(~Q(field=field)).first()
+            if entity is None:
                 ret = True
 
             if ret:
                 # add current field to table
-                field = DistinctEntity(field=field)
-                field.save()
+                entity = DistinctEntity(field=field)
+                entity.save()
             
             return ret
+        except Exception:
+            return False
+
+
+# Validate if field value is same than third header's field
+# receives the field
+# returns True if value match with third header's field
+#         False if value does not match with third header's field
+class SameAsHeader3CustomValidation(CustomValidation):
+    def validate(self, field):
+        return EqualFields.verify(field, 3, 'header')
+
+
+# Validate if field value is same than sixth header's field
+# receives the field
+# returns True if value match with sixth header's field
+#         False if value does not match with sixth header's field
+class SameAsHeader6CustomValidation(CustomValidation):
+    def validate(self, field):
+        return EqualFields.verify(field, 6, 'header')
+
+
+# Validate if field value is the sum of detalhe's seventh field
+# receives the field
+# returns True if value match with sum of detalhe's seventh field
+#         False if value does not match with sum of detalhe's seventh field
+class SumDetalhe7CustomValidation(CustomValidation):
+    def validate(self, field):
+        try:
+   
+            # get the value 
+            entity = SumFieldEntity.objects.filter(
+                position=7, registro='detalhe').first()
+            if entity is None:
+                # if there is no value, return false
+                return False
+
+            else:
+                # check if the value is the same
+                return entity.field == int(field)
+
+        except Exception:
+            return False
+
+
+# Helper function to check if the fields are equal
+# receives the field, the position in the map and the registro
+# returns True if value match
+#         False if value does not match
+class EqualFields():
+    @staticmethod
+    def verify(field, position, registro):
+        try:
+                        
+            # get the value 
+            entity = SaveFieldEntity.objects.filter(
+                position=position, registro=registro).first()
+            if entity is None:
+                # if there is no value, return false
+                return False
+
+            else:
+                # check if the value is the same
+                return entity.field == int(field)
+
         except Exception:
             return False

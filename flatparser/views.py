@@ -37,6 +37,12 @@ class ApiParser(views.APIView):
                         # updating messages log
                         data['messages'] = [ *data['messages'], *messages ]
 
+                    # Custom actions
+                    if is_valid:
+                        is_valid, messages = helpers.custom_actions(layout, file_path)
+                        # updating messages log
+                        data['messages'] = [ *data['messages'], *messages ]
+
                     # Custom rules validation
                     if is_valid:
                         is_valid, messages = helpers.custom_rules(layout, file_path)

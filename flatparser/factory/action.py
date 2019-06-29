@@ -50,7 +50,7 @@ class SumFieldCustomAction(CustomAction):
                 sum_field.save()
             else:
                 # if exists, update sum of the value
-                sum_field.field += field
+                sum_field.field += int(field)
                 sum_field.save()
 
             return None

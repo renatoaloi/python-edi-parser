@@ -6,7 +6,7 @@ from .factory.validation import DateCustomValidation, NumberCustomValidation, Te
                             SameAsHeader6CustomValidation
 from .factory.action import SaveFieldCustomAction, SumFieldCustomAction
 from .fs import read_file
-from .models import UniqueEntity, DistinctEntity
+from .models import UniqueEntity, DistinctEntity, SaveFieldEntity, SumFieldEntity
 
 
 # Regex match for validate positional file
@@ -136,6 +136,10 @@ def custom_actions(layout, filepath):
         # Processing lines
         count = 1
         messages = []
+
+        # Clean previous data
+        SaveFieldEntity.objects.all().delete()
+        SumFieldEntity.objects.all().delete()
 
         for line in read_file(filepath):
             # print(line)

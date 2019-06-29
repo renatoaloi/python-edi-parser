@@ -107,6 +107,7 @@ class UniqueCustomValidation(CustomValidation):
             # checking if it is unique against the database
             unique = UniqueEntity.objects.filter(field=field).first()
             if unique is None:
+                UniqueEntity.objects.create(field=field)
                 return True
 
             return False

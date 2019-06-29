@@ -1,9 +1,8 @@
 from django.shortcuts import render
 from rest_framework import views, response
-from django.core.files.storage import FileSystemStorage
 from edi import settings
 from . import helpers
-
+from .fs import save_upload
 
 class ApiParser(views.APIView):
 
@@ -18,10 +17,7 @@ class ApiParser(views.APIView):
                 id = request.POST.get('id', '0')
 
                 # upload the file to a folder
-                myfile = request.FILES['file']
-                fs = FileSystemStorage()
-                filename = fs.save(myfile.name, myfile)
-                media_path = settings.MEDIA_ROOT
+                file_path = save_upload(request.FILES['file'])
 
                 # Find selected layout
                 layout = next((item for item in settings.EDI_LAYOUTS if item['id'] == id), None)
@@ -30,27 +26,27 @@ class ApiParser(views.APIView):
                     # Processing layout
                     data['messages'].append('Processing layout: {}'.format(layout['type']))
 
-                    # Complete file path
-                    file_path = media_path + '\\' + filename
-
                     # Regex matching validation
-                    allLinesMatch, messages = helpers.regex_match(layout, file_path)
-                    
-                    # Registering data in a database
-                    if allLinesMatch:
-                        allLinesMatch, messages = helpers.register_data(layout, file_path)
+                    is_valid, messages = helpers.regex_match(layout, file_path)
+                    # updating messages log
+                    data['messages'] = [ *data['messages'], *messages ]
 
                     # Mandatory fields validation
-                    if allLinesMatch:
-                        allLinesMatch, messages = helpers.mandatory_check(layout, file_path)
+                    if is_valid:
+                        is_valid, messages = helpers.mandatory_check(layout, file_path)
+                        # updating messages log
+                        data['messages'] = [ *data['messages'], *messages ]
 
                     # Custom rules validation
-                    if allLinesMatch:
-                        allLinesMatch, messages = helpers.custom_rules(layout, file_path)
+                    if is_valid:
+                        is_valid, messages = helpers.custom_rules(layout, file_path)
+                        # updating messages log
+                        data['messages'] = [ *data['messages'], *messages ]
 
                     # updating validate status
-                    data['valid'] = allLinesMatch
-                    data['messages'] = [ *data['messages'], *messages ]
+                    data['valid'] = is_valid
+                    if not is_valid:
+                        data['response'] = 'FAIL'
 
                 else:
                     # If layout not found

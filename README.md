@@ -27,7 +27,7 @@ https://developercielo.github.io/tutorial/edi
 
 ## Especificação do mapeamento de layout
 
-No arquivo ```settings.py``` temos uma configuração especial que é uma variável chamada ```EDI_LAYOUTS```, onde temos os layouts implementados para validar arquivos posicionais.
+No arquivo ```settings.py``` temos uma configuração especial que é uma constante chamada ```EDI_LAYOUTS```, onde temos os layouts implementados para validar arquivos posicionais.
 
 A vantagem dessa abordagem é que podemos adicionar novas configurações no array de layout e aumentar o leque de arquivos que podem ser verificados pelo programa, sem precisar alterá-lo.
 
@@ -106,6 +106,9 @@ Onde:
 - ```response```: retorna ```OK``` ou ```FAIL``` dependendo se o arquivo processou corretamente ou não.
 - ```valid```: ```true``` se o arquivo é válido e ```false``` se não é.
 - ```messages```: um array de mensagens para ajudar a identificar onde o arquivo deu problema, trazendo todas as mensagens de log geradas durante cada etapa da validação.
+
+Observações:
+- O array de mensagens é bastante verboso quando a constante ```DEBUG``` do arquivo ```settings.py``` está ligada, ou seja configurada com o valor ```True```, quando está com valor ```False```, apenas retorna mensagens de erro.
 
 ### Exemplo de chamada utilizando o cURL
 

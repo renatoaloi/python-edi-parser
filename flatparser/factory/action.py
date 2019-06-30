@@ -29,9 +29,9 @@ class SaveFieldCustomAction(CustomAction):
                 save_field.field = field
                 save_field.save()
 
-            return None
-        except:
-            return None
+            return (True, [])
+        except Exception as e:
+            return (False, [ str(e) ])
 
 
 # Sum value of the field
@@ -53,6 +53,6 @@ class SumFieldCustomAction(CustomAction):
                 sum_field.field += int(field)
                 sum_field.save()
 
-            return None
-        except:
-            return None
+            return (True, [])
+        except Exception as e:
+            return (False, [ str(e) ])

@@ -7,6 +7,7 @@ from .factory.validation import DateCustomValidation, NumberCustomValidation, Te
 from .factory.action import SaveFieldCustomAction, SumFieldCustomAction
 from .fs import read_file
 from .models import UniqueEntity, DistinctEntity, SaveFieldEntity, SumFieldEntity
+from edi import settings
 
 
 # Regex match for validate positional file
@@ -27,14 +28,16 @@ def regex_match(layout, filepath):
             # Matching for header, detalhe or trailler
             found_match = False
             for registro in layout['layout']:
-                messages.append('Validating line #{} for {}'.format(count, registro['registro']))
+                if settings.DEBUG:
+                    messages.append('Validating line #{} for {}'.format(count, registro['registro']))
 
                 # Regex search for a match
                 match = re.search(registro['regex'], line)
                 if match is not None:
                     # Found a match
                     found_match = True
-                    messages.append('Line #{} OK for {}!'.format(count, registro['registro']))
+                    if settings.DEBUG:
+                        messages.append('Line #{} OK for {}!'.format(count, registro['registro']))
                     break
 
             # check for found match
@@ -75,7 +78,8 @@ def mandatory_check(layout, filepath):
                 match = re.search(registro['regex'], line)
                 if match is not None:
                     # Found a match
-                    messages.append('Mandatory fields for line #{} for {}'.format(count, registro['registro']))
+                    if settings.DEBUG:
+                        messages.append('Mandatory fields for line #{} for {}'.format(count, registro['registro']))
 
                     # Iterate through the fields
                     i = 0
@@ -98,8 +102,9 @@ def mandatory_check(layout, filepath):
                                 # and check its contents for text
                                 is_valid = TextCustomValidation().validate(field)
 
-                            messages.append('Mandatory field #{} for line #{} is {}!'\
-                                    .format(i + 1, count, 'OK' if is_valid else 'ERROR'))
+                            if settings.DEBUG or not is_valid:
+                                messages.append('Mandatory field #{} for line #{} is {}!'\
+                                        .format(i + 1, count, 'OK' if is_valid else 'ERROR'))
 
                         # check for is_valid is still true
                         # otherwise there is no point in continue
@@ -136,6 +141,7 @@ def custom_actions(layout, filepath):
         # Processing lines
         count = 1
         messages = []
+        is_valid = True
 
         # Clean previous data
         SaveFieldEntity.objects.all().delete()
@@ -151,7 +157,8 @@ def custom_actions(layout, filepath):
                 match = re.search(registro['regex'], line)
                 if match is not None:
                     # Found a match
-                    messages.append('Running custom actions for line #{} for {}'.format(count, registro['registro']))
+                    if settings.DEBUG:
+                        messages.append('Running custom actions for line #{} for {}'.format(count, registro['registro']))
 
                     # Iterate through the fields
                     i = 0
@@ -168,18 +175,21 @@ def custom_actions(layout, filepath):
                             # Then we run actions
                             if action_key == 'SaveField':
                                 # Save the field
-                                SaveFieldCustomAction().run(field, i + 1, registro['registro'])
+                                is_valid, messages = \
+                                    SaveFieldCustomAction().run(field, i + 1, registro['registro'])
                             elif action_key == 'SumField':
                                 # Sum the field
-                                SumFieldCustomAction().run(field, i + 1, registro['registro'])
+                                is_valid, messages = \
+                                    SumFieldCustomAction().run(field, i + 1, registro['registro'])
                                 
                             else:
                                 # there is no action configured for this key
                                 raise Exception('There is no action ' + \
                                     'configured for this key {}'.format(action_key))
 
-                            messages.append('Done run custom action {} for field #{} in line #{}!'\
-                                    .format(action_key, i + 1, count))
+                            if settings.DEBUG:
+                                messages.append('Done run custom action {} for field #{} in line #{}!'\
+                                        .format(action_key, i + 1, count))
 
                         # increment field index
                         i += 1
@@ -190,7 +200,7 @@ def custom_actions(layout, filepath):
             # update line count    
             count += 1
         
-        return (True, messages,)
+        return (is_valid, messages,)
 
     except Exception as e:
         return (False, [ str(e) ],)
@@ -222,7 +232,8 @@ def custom_rules(layout, filepath):
                 match = re.search(registro['regex'], line)
                 if match is not None:
                     # Found a match
-                    messages.append('Custom validation fields for line #{} for {}'.format(count, registro['registro']))
+                    if settings.DEBUG:
+                        messages.append('Custom validation fields for line #{} for {}'.format(count, registro['registro']))
 
                     # Iterate through the fields
                     i = 0
@@ -267,7 +278,8 @@ def custom_rules(layout, filepath):
                                 raise Exception('There is no custom validator ' + \
                                     'configured for this key {}'.format(validation_key))
 
-                            messages.append('Custom validation type {} field #{} for line #{} is {}!'\
+                            if settings.DEBUG or not is_valid:
+                                messages.append('Custom validation type {} field #{} for line #{} is {}!'\
                                     .format(validation_key, i + 1, count, 'OK' if is_valid else 'ERROR'))
 
                         # check for is_valid is still true

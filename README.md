@@ -3,6 +3,10 @@
 # python-edi-parser
 Python/Django REST Framework positional flat file reader API
 
+## Demo
+
+![](demo.gif)
+
 ## Descrição
 
 ```python-edi-parser``` é um projeto feito em Python, utilizando framework Django, que expõe uma API REST para verificação de um arquivo EDI (arquivo texto posicional).

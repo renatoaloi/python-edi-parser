@@ -9,7 +9,7 @@ A API funciona recebendo um parâmetro de tipo de layout (explicado abaixo) e ta
 
 O sistema de verificação do arquivo EDI é baseado em um mapeamento de layout que pode ser configurado para outros layouts de arquivos posicionais.
 
-A aplicação foi desenvolvida utilizando o design pattern Abstract Factory para implementar as funções de custom validation e também de custom actions.
+A aplicação foi desenvolvida utilizando o design pattern Abstract Factory para implementar as funções de ```custom_validation``` e também de ```custom_actions```.
 
 ## Documentação do arquivo EDI
 

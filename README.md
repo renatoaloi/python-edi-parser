@@ -103,7 +103,7 @@ Onde:
 - ```valid```: ```true``` se o arquivo é válido e ```false``` se não é.
 - ```messages```: um array de mensagens para ajudar a identificar onde o arquivo deu problema, trazendo todas as mensagens de log geradas durante cada etapa da validação.
 
-Exemplo de chamada utilizando o cURL:
+### Exemplo de chamada utilizando o cURL
 
 ```
 curl -X POST \
@@ -114,6 +114,8 @@ curl -X POST \
 ```
 
 Obs: substitua o caminho do arquivo ```test_file.txt``` pelo correspondente no seu computador.
+
+### Exemplo de uso pelo Postman
 
 Outra forma de usar a API é chamando pelo Postman. Utilize a URL abaixo e importe no Postman, clicando no botão ```Import``` e selecionando a aba ```Import From Link```:
 

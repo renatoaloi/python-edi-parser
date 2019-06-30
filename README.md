@@ -125,7 +125,7 @@ Depois clique na aba ```Body``` e selecione o arquivo clicando no botão ```Sele
 
 Para enviar a requisição clique no botão ```Send```.
 
-### Configuração do mapa de layout
+## Configuração do mapa de layout
 
 O programa já tem configurado com o layout do ```Arquivo para Remessa e/ou Retorno de Vendas```, do portal da Cielo, conforme esse [link](https://developercielo.github.io/tutorial/edi#arquivos-para-remessa-e/ou-retorno-de-vendas). 
 

@@ -107,7 +107,7 @@ Onde:
 - ```valid```: ```true``` se o arquivo é válido e ```false``` se não é.
 - ```messages```: um array de mensagens para ajudar a identificar onde o arquivo deu problema, trazendo todas as mensagens de log geradas durante cada etapa da validação.
 
-Exemplo de chamada utilizando o cURL:
+### Exemplo de chamada utilizando o cURL
 
 ```
 curl -X POST \
@@ -119,6 +119,8 @@ curl -X POST \
 
 Obs: substitua o caminho do arquivo ```test_file.txt``` pelo correspondente no seu computador.
 
+### Exemplo de uso pelo Postman
+
 Outra forma de usar a API é chamando pelo Postman. Utilize a URL abaixo e importe no Postman, clicando no botão ```Import``` e selecionando a aba ```Import From Link```:
 
 https://www.getpostman.com/collections/86aa206e3a7b181d746a
@@ -127,7 +129,7 @@ Depois clique na aba ```Body``` e selecione o arquivo clicando no botão ```Sele
 
 Para enviar a requisição clique no botão ```Send```.
 
-### Configuração do mapa de layout
+## Configuração do mapa de layout
 
 O programa já tem configurado com o layout do ```Arquivo para Remessa e/ou Retorno de Vendas```, do portal da Cielo, conforme esse [link](https://developercielo.github.io/tutorial/edi#arquivos-para-remessa-e/ou-retorno-de-vendas). 
 
